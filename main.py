@@ -1,20 +1,52 @@
 from tkinter import *
 from tkinter import ttk
+
+from PIL import Image, ImageTk
 import os, csv
 
-w = Tk(className="rock judging time !")
+root = Tk(className="rock judging time !")
 
-def scene2():
+
+def load_scene(scene):
+    match scene:
+        case 0:
+            frame_ts.tkraise()
+        case 1:
+            frame_rs.tkraise()
+
+
+def set_image(cmd):
     pass
+
+
 
 # objects
 
-TS_Title = ttk.Label(text="Welcome, judge, to\nThe Official Rock Judging GUI!", font=35)
-TS_Button = ttk.Button(text="Begin Judging", command=scene2)
+frame_ts = ttk.Frame(root)
+frame_rs = ttk.Frame(root)
+
+images = [n for n in os.listdir("images")]
+current_img = Image.open("images\\" + images[0])
+current_img = ImageTk.PhotoImage(current_img)
+
+ts_title = ttk.Label(frame_ts, text="Welcome, judge, to\n"
+                          "The Official Rock Judging GUI!", font=35)
+ts_btn = ttk.Button(frame_ts, text="Begin Judging", command=lambda: load_scene(1))
+
+rs_title = ttk.Label(frame_rs, text="This the rock screen ig")
+rs_rockpic = ttk.Label(frame_rs, image=current_img)
 
 # draw
 
-TS_Title.pack(padx=25,pady=12)
-TS_Button.pack(padx=25, pady=13)
+ts_title.pack(padx=25, pady=12)
+ts_btn.pack(padx=25, pady=13)
 
-w.mainloop()
+rs_title.pack(padx=10, pady=10)
+rs_rockpic.pack(padx=10, pady=10)
+
+frame_ts.grid(row=0, column=0, sticky="nesw")
+frame_rs.grid(row=0, column=0, sticky="nesw")
+
+load_scene(0)
+
+root.mainloop()
