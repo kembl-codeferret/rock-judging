@@ -31,7 +31,7 @@ def load_image(img, width=500):
 frame_ts = ttk.Frame(root)
 frame_rs = ttk.Frame(root, borderwidth=3)
 
-# rs_tabs = ttk.Notebook(frame_rs)
+rs_scores = ttk.Frame(frame_rs)
 
 images = [n for n in os.listdir("images")]
 image_num = 0
@@ -46,6 +46,14 @@ ts_btn = ttk.Button(frame_ts, text="Begin Judging", command=lambda: load_scene(1
 rs_title = ttk.Label(frame_rs, text="Look at this here Rock!!")
 rs_rockpic = ttk.Label(frame_rs, image=current_rock)
 
+rs_R1 = ttk.Entry(rs_scores)
+rs_R2 = ttk.Entry(rs_scores)
+rs_R3 = ttk.Entry(rs_scores)
+rs_submit = ttk.Button(rs_scores, text="Enter Scores")
+
+rs_description = ttk.Label(frame_rs, text="description go here")
+rs_story = ttk.Label(frame_rs, text="story go here")
+
 # draw
 
 ts_title.pack(padx=25, pady=12)
@@ -53,6 +61,16 @@ ts_btn.pack(padx=25, pady=13)
 
 rs_title.grid(row=0, column=0, columnspan=2)
 rs_rockpic.grid(row=1, column=0)
+
+rs_scores.grid(row=1, column=1)
+rs_R1.grid(row=0, column=0)
+rs_R2.grid(row=0, column=1)
+rs_R3.grid(row=0, column=2)
+rs_submit.grid(row=1,column=0, columnspan=3)
+
+rs_story.grid(row=2, column=0)
+rs_description.grid(row=2, column=1)
+
 
 frame_ts.grid(row=0, column=0, sticky="nesw")
 frame_rs.grid(row=0, column=0, sticky="nesw")
