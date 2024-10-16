@@ -66,10 +66,10 @@ rs_scores.grid(row=1, column=1)
 rs_R1.grid(row=0, column=0)
 rs_R2.grid(row=0, column=1)
 rs_R3.grid(row=0, column=2)
-rs_submit.grid(row=1,column=0, columnspan=3)
+rs_submit.grid(row=1, column=0, columnspan=3)
 
-rs_story.grid(row=2, column=0)
-rs_description.grid(row=2, column=1)
+rs_description.grid(row=2, column=0)
+rs_story.grid(row=2, column=1)
 
 
 frame_ts.grid(row=0, column=0, sticky="nesw")
