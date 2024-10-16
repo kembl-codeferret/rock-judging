@@ -5,8 +5,13 @@ from PIL import Image, ImageTk
 import os
 import csv
 
-root = Tk(className="rock judging time !")
+import requests
+from io import BytesIO
 
+root = Tk(className="rock judging time !")
+with open("K24ROTY Submission Form.csv", newline='') as csvfile:
+    rock_reader = csv.reader(csvfile)
+    rock_lines = [n for n in rock_reader]
 
 def load_scene(scene):
     match scene:
@@ -17,7 +22,9 @@ def load_scene(scene):
 
 
 def load_image(img, width=500):
-    image = Image.open("images\\" + img)
+    response = requests.get(img)
+    img_data = response.content
+    image = Image.open(BytesIO(img_data))
 
     ratio = width / image.width
     resized_img = image.resize((int(image.width * ratio), int(image.height * ratio)))
@@ -33,10 +40,9 @@ frame_rs = ttk.Frame(root, borderwidth=3)
 
 rs_scores = ttk.Frame(frame_rs)
 
-images = [n for n in os.listdir("images")]
 image_num = 0
 
-current_rock = ImageTk.PhotoImage(load_image(images[0]))
+current_rock = ImageTk.PhotoImage(load_image(rock_lines[1][2]))
 
 ts_title = ttk.Label(frame_ts, text="Welcome, judge, to\n"
                                     "The Official Rock Judging GUI!",
@@ -51,8 +57,8 @@ rs_R2 = ttk.Entry(rs_scores)
 rs_R3 = ttk.Entry(rs_scores)
 rs_submit = ttk.Button(rs_scores, text="Enter Scores")
 
-rs_description = ttk.Label(frame_rs, text="description go here")
-rs_story = ttk.Label(frame_rs, text="story go here")
+rs_description = ttk.Label(frame_rs, text="description go here", wraplength=500)
+rs_story = ttk.Label(frame_rs, text="story go here", wraplength=500)
 
 # draw
 
