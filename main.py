@@ -5,13 +5,18 @@ from PIL import Image, ImageTk
 import os
 import csv
 
-import requests
-from io import BytesIO
+import gdown
 
 root = Tk(className="rock judging time !")
 with open("K24ROTY Submission Form.csv", newline='') as csvfile:
     rock_reader = csv.reader(csvfile)
     rock_lines = [n for n in rock_reader]
+
+for line in range(len(rock_lines)):
+    if line > 0:
+        gdown.download('uc'.join(rock_lines[line][2].split('open')), "images/" + rock_lines[line][2].split('=')[1])
+        rock_lines[line][2] = rock_lines[line][2].split('=')[1]
+
 
 def load_scene(scene):
     match scene:
@@ -21,10 +26,8 @@ def load_scene(scene):
             frame_rs.tkraise()
 
 
-def load_image(img, width=500):
-    response = requests.get(img)
-    img_data = response.content
-    image = Image.open(BytesIO(img_data))
+def load_image(index, width=500):
+    image = Image.open('images/' + rock_lines[index][2])
 
     ratio = width / image.width
     resized_img = image.resize((int(image.width * ratio), int(image.height * ratio)))
@@ -42,7 +45,7 @@ rs_scores = ttk.Frame(frame_rs)
 
 image_num = 0
 
-current_rock = ImageTk.PhotoImage(load_image(rock_lines[1][2]))
+current_rock = ImageTk.PhotoImage(load_image(image_num + 1))
 
 ts_title = ttk.Label(frame_ts, text="Welcome, judge, to\n"
                                     "The Official Rock Judging GUI!",
