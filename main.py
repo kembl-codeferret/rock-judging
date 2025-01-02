@@ -27,7 +27,7 @@ def load_scene(scene):
 
 
 def load_image(index, width=500):
-    image = Image.open('images/' + rock_lines[index][2])
+    image = Image.open('images/' + rock_lines[index + 1][2])
 
     ratio = width / image.width
     resized_img = image.resize((int(image.width * ratio), int(image.height * ratio)))
@@ -35,6 +35,25 @@ def load_image(index, width=500):
 
     return resized_img
 
+
+def load_rock(index):
+    rs_description.config(text=change_desc(index + 1))
+    rs_story.config(text=change_story(index + 1))
+
+    new_img = ImageTk.PhotoImage(load_image(index + 1))
+    rs_rockpic.config(image=new_img)
+    rs_rockpic.image = new_img
+    # image_num += 1
+
+
+def change_image(index):
+    return load_image(index)
+
+def change_desc(index):
+    return rock_lines[index + 1][3]
+
+def change_story(index):
+    return rock_lines[index + 1][4]
 
 # objects
 
@@ -45,7 +64,10 @@ rs_scores = ttk.Frame(frame_rs)
 
 image_num = 0
 
-current_rock = ImageTk.PhotoImage(load_image(image_num + 1))
+current_rock = ImageTk.PhotoImage(load_image(image_num))
+
+desc_text = change_desc(image_num)
+story_text = change_story(image_num)
 
 ts_title = ttk.Label(frame_ts, text="Welcome, judge, to\n"
                                     "The Official Rock Judging GUI!",
@@ -58,10 +80,10 @@ rs_rockpic = ttk.Label(frame_rs, image=current_rock)
 rs_R1 = ttk.Entry(rs_scores)
 rs_R2 = ttk.Entry(rs_scores)
 rs_R3 = ttk.Entry(rs_scores)
-rs_submit = ttk.Button(rs_scores, text="Enter Scores")
+rs_submit = ttk.Button(rs_scores, text="Enter Scores", command=lambda: load_rock(image_num))
 
-rs_description = ttk.Label(frame_rs, text="description go here", wraplength=500)
-rs_story = ttk.Label(frame_rs, text="story go here", wraplength=500)
+rs_description = ttk.Label(frame_rs, text="Rock description:\n" + desc_text, wraplength=500, justify="center")
+rs_story = ttk.Label(frame_rs, text="Rock story:\n" + story_text, wraplength=500, justify="center")
 
 # draw
 
