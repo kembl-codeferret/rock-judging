@@ -46,6 +46,7 @@ def load_rock(index):
 
     try:
         rs_description.config(text="Rock description:\n" + change_desc(index + 1))
+        rs_story.config(text="Rock story:\n" + change_story(index + 1))
 
         new_img = ImageTk.PhotoImage(load_image(index + 1))
         rs_rockpic.config(image=new_img)
@@ -71,10 +72,16 @@ def change_story(index):
 def final():
     global judge_name
     if len(es_entry.get()) > 1: judge_name = es_entry.get()
+    root.destroy()
 
 
 image_num = 0
 current_rock = ImageTk.PhotoImage(load_image(image_num))
+
+judge_name = "left blank, fuckign nerd"
+judging_data = [
+    ["contestant name", "rock id", "cool score", "color score", "story score"]
+]
 
 # objects
 
