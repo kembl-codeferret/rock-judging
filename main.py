@@ -109,3 +109,7 @@ frame_rs.grid(row=0, column=0, sticky="nesw")
 load_scene(0)
 
 root.mainloop()
+
+with open("KRA24 Judging Form - " + """judge_name""" + ".csv", 'w', newline='') as csvfile:
+    rock_writer = csv.writer(csvfile)
+    rock_writer.writerows(judging_data)
