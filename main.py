@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 import os
 import csv
 
-import gdown
+# import gdown
 
 root = Tk(className="rock judging time !")
 with open("K24ROTY Submission Form.csv", newline='') as csvfile:
@@ -15,8 +15,8 @@ with open("K24ROTY Submission Form.csv", newline='') as csvfile:
 
 for line in range(len(rock_lines)):
     if line > 0:
-        gdown.download('uc'.join(rock_lines[line][2].split('open')), "images/" + rock_lines[line][2].split('=')[1])
-        rock_lines[line][2] = rock_lines[line][2].split('=')[1]
+        # gdown.download('uc'.join(rock_lines[line][4].split('open')), "images/" + rock_lines[line][4].split('=')[1])
+        rock_lines[line][4] = rock_lines[line][4].split('=')[1]
 
 
 def load_scene(scene):
@@ -30,7 +30,7 @@ def load_scene(scene):
 
 
 def load_image(index, width=500):
-    image = Image.open('images/' + rock_lines[index + 1][2])
+    image = Image.open('images/' + rock_lines[index + 1][4] + ".jpg")
 
     ratio = width / image.width
     resized_img = image.resize((int(image.width * ratio), int(image.height * ratio)))
@@ -62,11 +62,11 @@ def change_image(index):
 
 
 def change_desc(index):
-    return rock_lines[index + 1][3]
+    return rock_lines[index + 1][2]
 
 
 def change_story(index):
-    return rock_lines[index + 1][4]
+    return rock_lines[index + 1][3]
 
 
 def final():
