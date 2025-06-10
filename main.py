@@ -5,18 +5,27 @@ from PIL import Image, ImageTk
 import os
 import csv
 
-# import gdown
+import image_downloader
+
 
 root = Tk(className="rock judging time !")
 with open("K24ROTY Submission Form.csv", newline='') as csvfile:
     rock_reader = csv.reader(csvfile)
     rock_lines = [n for n in rock_reader]
 
+images = []
 
 for line in range(len(rock_lines)):
     if line > 0:
-        # gdown.download('uc'.join(rock_lines[line][4].split('open')), "images/" + rock_lines[line][4].split('=')[1])
-        rock_lines[line][4] = rock_lines[line][4].split('=')[1]
+        images.append(Image.open(image_downloader.prepare_image(rock_lines[line][4])))
+
+image_num = 0 # the index of the image that is being displayed
+current_rock = ImageTk.PhotoImage(images[image_num]) # sets image based on the index
+
+judge_name = "left blank, fuckign nerd"
+judging_data = [
+    ["contestant name", "rock id", "cool score", "color score", "story score"]
+]
 
 
 def load_scene(scene):
@@ -29,36 +38,23 @@ def load_scene(scene):
             frame_es.tkraise()
 
 
-def load_image(index, width=500):
-    image = Image.open('images/' + rock_lines[index + 1][4] + ".jpg")
-
-    ratio = width / image.width
-    resized_img = image.resize((int(image.width * ratio), int(image.height * ratio)))
-    #  print(resized_img.width, resized_img.height)
-
-    return resized_img
-
-
 def load_rock(index):
-    global image_num, judging_data
+    global image_num
 
-    judging_data.append([rock_lines[image_num+1][1], rock_lines[image_num+1][2], rs_R1.get(), rs_R2.get(), rs_R3.get()])
+    judging_data.append([rock_lines[index+1][1], rock_lines[index+1][2], rs_R1.get(), rs_R2.get(), rs_R3.get()])
+
+    image_num += 1
 
     try:
-        rs_description.config(text="Rock description:\n" + change_desc(index + 1))
-        rs_story.config(text="Rock story:\n" + change_story(index + 1))
+        rs_description.config(text="Rock description:\n" + change_desc(image_num))
+        rs_story.config(text="Rock story:\n" + change_story(image_num))
 
-        new_img = ImageTk.PhotoImage(load_image(index + 1))
+        new_img = ImageTk.PhotoImage(images[image_num])
         rs_rockpic.config(image=new_img)
         rs_rockpic.image = new_img
 
-        image_num += 1
     except IndexError:
         load_scene(2)
-
-
-def change_image(index):
-    return load_image(index)
 
 
 def change_desc(index):
@@ -73,15 +69,6 @@ def final():
     global judge_name
     if len(es_entry.get()) > 1: judge_name = es_entry.get()
     root.destroy()
-
-
-image_num = 0
-current_rock = ImageTk.PhotoImage(load_image(image_num))
-
-judge_name = "left blank, fuckign nerd"
-judging_data = [
-    ["contestant name", "rock id", "cool score", "color score", "story score"]
-]
 
 # objects
 
