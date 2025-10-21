@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+import sv_ttk
+
 
 from PIL import Image, ImageTk
 import os
@@ -129,6 +131,7 @@ frame_es.grid(row=0, column=0, sticky="nesw")
 
 load_scene(0)
 
+sv_ttk.set_theme("dark")
 root.mainloop()
 
 with open("KRA24 Judging Form - " + judge_name + ".csv", 'w', newline='') as csvfile:
