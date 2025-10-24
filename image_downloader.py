@@ -1,10 +1,8 @@
 import os
-import shutil
-import os.path as path
 import random
 import string
 import gdown
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 def prepare_image(_input):
@@ -18,8 +16,10 @@ def prepare_image(_input):
         ratio = 500 / _img.width
         _img = _img.resize((int(_img.width * ratio), int(_img.height * ratio)))
         _img = _img.convert("RGB")
-        _img.save("images/" + name, format="jpeg", optimize=True, quality=35)
         # with Qt, I don't need to do the rescaling because, unlike Tk, Qt will resize the image to fit the widget,
         # but I'm keeping it for loading speed sake. rather waste time now than every time the image is loaded
+        _img = ImageOps.exif_transpose(_img) # rotate image from exif tags
+
+        _img.save("images/" + name, format="jpeg", optimize=True, quality=35)
 
     return image
