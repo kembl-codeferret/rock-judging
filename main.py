@@ -11,22 +11,32 @@ import image_downloader
 
 
 root = Tk(className="rock judging time !")
+
+submissions = {}
+submission_keys = []
+
 with open("K24ROTY Submission Form.csv", newline='') as csvfile:
     rock_reader = csv.reader(csvfile)
-    rock_lines = [n for n in rock_reader]
+    for line in rock_reader:
+        submission_keys.append(line[1]) # add key to key library
+        submissions[line[1]] = {
+            "description": line[2],
+            "story": line[3],
+            "picture": line[4]
+        }
+    del submissions[submission_keys[0]] # remove the first key (csv file table key)
+    submission_keys.pop(0)
 
-images = []
-
-for line in range(len(rock_lines)):
-    if line > 0:
-        images.append(Image.open(image_downloader.prepare_image(rock_lines[line][4])))
+# replace the gdrive link with image object
+for key in submission_keys:
+    submissions[key]["picture"] = Image.open(image_downloader.prepare_image(submissions[key]["picture"]))
 
 image_num = 0 # the index of the image that is being displayed
-current_rock = ImageTk.PhotoImage(images[image_num]) # sets image based on the index
+current_rock = ImageTk.PhotoImage(submissions[submission_keys[image_num]]["picture"]) # sets the first image
 
 judge_name = "left blank, fuckign nerd"
 judging_data = [
-    ["contestant name", "rock id", "cool score", "color score", "story score"]
+    ["contestant name", "cool score", "color score", "story score"]
 ]
 
 
@@ -43,7 +53,7 @@ def load_scene(scene):
 def load_rock(index):
     global image_num
 
-    judging_data.append([rock_lines[index+1][1], rock_lines[index+1][2], rs_R1.get(), rs_R2.get(), rs_R3.get()])
+    judging_data.append([submission_keys[index], rs_R1.get(), rs_R2.get(), rs_R3.get()])
 
     image_num += 1
 
@@ -51,7 +61,7 @@ def load_rock(index):
         rs_description.config(text="Rock description:\n" + change_desc(image_num))
         rs_story.config(text="Rock story:\n" + change_story(image_num))
 
-        new_img = ImageTk.PhotoImage(images[image_num])
+        new_img = ImageTk.PhotoImage(submissions[submission_keys[image_num]]["picture"])
         rs_rockpic.config(image=new_img)
         rs_rockpic.image = new_img
 
@@ -60,11 +70,11 @@ def load_rock(index):
 
 
 def change_desc(index):
-    return rock_lines[index + 1][2]
+    return submissions[submission_keys[index]]["description"]
 
 
 def change_story(index):
-    return rock_lines[index + 1][3]
+    return submissions[submission_keys[index]]["story"]
 
 
 def final():
