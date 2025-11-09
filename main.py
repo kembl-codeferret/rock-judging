@@ -1,21 +1,13 @@
-from tkinter import *
-from tkinter import ttk
-import sv_ttk
-
-
-from PIL import Image, ImageTk
-import os
 import csv
+from PyQt6.QtWidgets import QApplication
+from image_downloader import prepare_image
+from gui import MainWindow
 
-import image_downloader
-
-
-root = Tk(className="rock judging time !")
-
+# variables for the submissions from the google form
 submissions = {}
 submission_keys = []
 
-with open("K24ROTY Submission Form.csv", newline='') as csvfile:
+with open(input("input submission form csv file: "), newline='') as csvfile:
     rock_reader = csv.reader(csvfile)
     for line in rock_reader:
         submission_keys.append(line[1]) # add key to key library
@@ -27,123 +19,12 @@ with open("K24ROTY Submission Form.csv", newline='') as csvfile:
     del submissions[submission_keys[0]] # remove the first key (csv file table key)
     submission_keys.pop(0)
 
-# replace the gdrive link with image object
+# replace the gdrive link with image dir location
 for key in submission_keys:
-    submissions[key]["picture"] = Image.open(image_downloader.prepare_image(submissions[key]["picture"]))
+    submissions[key]["picture"] = prepare_image(submissions[key]["picture"])
 
-image_num = 0 # the index of the image that is being displayed
-current_rock = ImageTk.PhotoImage(submissions[submission_keys[image_num]]["picture"]) # sets the first image
+app = QApplication([])
+window = MainWindow(submissions)
 
-judge_name = "left blank, fuckign nerd"
-judging_data = [
-    ["contestant name", "cool score", "color score", "story score"]
-]
-
-
-def load_scene(scene):
-    match scene:
-        case 0:
-            frame_ts.tkraise()
-        case 1:
-            frame_rs.tkraise()
-        case 2:
-            frame_es.tkraise()
-
-
-def load_rock(index):
-    global image_num
-
-    judging_data.append([submission_keys[index], rs_R1.get(), rs_R2.get(), rs_R3.get()])
-
-    image_num += 1
-
-    try:
-        rs_description.config(text="Rock description:\n" + change_desc(image_num))
-        rs_story.config(text="Rock story:\n" + change_story(image_num))
-
-        new_img = ImageTk.PhotoImage(submissions[submission_keys[image_num]]["picture"])
-        rs_rockpic.config(image=new_img)
-        rs_rockpic.image = new_img
-
-    except IndexError:
-        load_scene(2)
-
-
-def change_desc(index):
-    return submissions[submission_keys[index]]["description"]
-
-
-def change_story(index):
-    return submissions[submission_keys[index]]["story"]
-
-
-def final():
-    global judge_name
-    if len(es_entry.get()) > 1: judge_name = es_entry.get()
-    root.destroy()
-
-# objects
-
-frame_ts = ttk.Frame(root)
-frame_rs = ttk.Frame(root, borderwidth=3)
-frame_es = ttk.Frame(root)
-
-rs_scores = ttk.Frame(frame_rs)
-
-desc_text = change_desc(image_num)
-story_text = change_story(image_num)
-
-ts_title = ttk.Label(frame_ts, text="Welcome, judge, to\n"
-                                    "The Official Rock Judging GUI!",
-                                    font=35, justify="center")
-ts_btn = ttk.Button(frame_ts, text="Begin Judging", command=lambda: load_scene(1))
-
-es_title = ttk.Label(frame_es, text="Thank you for judging!\nPlease enter your name here:", font=35, justify="center")
-es_entry = ttk.Entry(frame_es)
-es_btn = ttk.Button(frame_es, text="exit program", command=final)
-
-rs_title = ttk.Label(frame_rs, text="Look at this here Rock!!")
-rs_rockpic = ttk.Label(frame_rs, image=current_rock)
-
-rs_R1 = ttk.Entry(rs_scores)
-rs_R2 = ttk.Entry(rs_scores)
-rs_R3 = ttk.Entry(rs_scores)
-rs_submit = ttk.Button(rs_scores, text="Enter Scores", command=lambda: load_rock(image_num))
-
-rs_description = ttk.Label(frame_rs, text="Rock description:\n" + desc_text, wraplength=500, justify="center")
-rs_story = ttk.Label(frame_rs, text="Rock story:\n" + story_text, wraplength=500, justify="center")
-
-# draw
-
-ts_title.pack(padx=25, pady=12)
-ts_btn.pack(padx=25, pady=13)
-
-es_title.pack(padx=25, pady=12)
-es_entry.pack(padx=25)
-es_btn.pack(padx=25, pady=13)
-
-rs_title.grid(row=0, column=0, columnspan=2)
-rs_rockpic.grid(row=1, column=0)
-
-rs_scores.grid(row=1, column=1)
-rs_R1.grid(row=0, column=0)
-rs_R2.grid(row=0, column=1)
-rs_R3.grid(row=0, column=2)
-rs_submit.grid(row=1, column=0, columnspan=3)
-
-rs_description.grid(row=2, column=0)
-rs_story.grid(row=2, column=1)
-
-
-frame_ts.grid(row=0, column=0, sticky="nesw")
-frame_rs.grid(row=0, column=0, sticky="nesw")
-frame_es.grid(row=0, column=0, sticky="nesw")
-
-load_scene(0)
-
-sv_ttk.set_theme("dark")
-root.mainloop()
-
-with open("KRA24 Judging Form - " + judge_name + ".csv", 'w', newline='') as csvfile:
-    rock_writer = csv.writer(csvfile)
-    rock_writer.writerows(judging_data)
+window.show()
+app.exec()
